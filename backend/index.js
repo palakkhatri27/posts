@@ -30,7 +30,7 @@ const pool = new Pool({
 app.use(express.static('public'));
 
 async function getAllPosts(page = 1) {
-    const LIMIT = 10;
+    const LIMIT = 9;
     const offset = (page - 1) * LIMIT;
     const result = await pool.query(
         "SELECT * FROM posts ORDER BY id LIMIT $1 OFFSET $2",
@@ -89,7 +89,7 @@ app.get('/', async (req, res) => {
 // Get all posts from demo api
 app.get('/fromApi', async (req, res) => {
     const page = parseInt(req.query.page) || 1;
-    const LIMIT = 10;
+    const LIMIT = 9;
     const startIndex = (page - 1) * LIMIT;
     const endIndex = startIndex + LIMIT;
     try {
@@ -123,13 +123,16 @@ app.get('/post/:id', async (req, res) => {
         }
 
         const post = result.rows[0];
+        const charTitle = countChar.countChars(post.title);
+        const charBody = countChar.countChars(post.body);
 
         return res.status(200).json({
             id: post.id,
             userId: post.userid,
             title: post.title,
+            charTitle: charTitle,
             body: post.body,
-            numOfChar: countChar.countChars(post.title)
+            charBody: charBody,
         });
     } catch (error) {
         console.error('Failed to fetch post:', error);
@@ -141,17 +144,13 @@ app.get('/post/:id', async (req, res) => {
 app.put('/post/:id', async (req, res) => {
     const postId = parseInt(req.params.id);
     const { title, body } = req.body;
-
-    console.log(postId);
-    console.log(title);
-    console.log(body);
     
     if (isNaN(postId)) {
         return res.status(400).json({ error: 'Invalid post ID' });
     }
 
     if (!title && !body) {
-        return res.redirect(`/post/${postId}`);
+        return res.status(400).json({ error: 'Nothing to update' });
     } else {
         try {
             const fields = [];
@@ -169,16 +168,13 @@ app.put('/post/:id', async (req, res) => {
             }
 
             values.push(postId);
-            console.log(fields);
-            console.log(values);
-            console.log(index);
             const result = await pool.query(`
                 UPDATE posts
                 SET ${fields.join(', ')}
                 WHERE id = $${index}
             `, values);
 
-            return res.redirect(`/post/${postId}`);
+            return res.status(200).json({ error: 'Post updated successfully' });;
         } catch (error) {
             console.error('Update failed:', error);
             return res.status(500).json({ error: 'Internal Server Error' });

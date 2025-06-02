@@ -1,0 +1,10 @@
+@import "tailwindcss";
+
+@theme {
+  --color-charcoal: #1e293b;
+  --color-slate: #334155;
+  --color-smoke: #94a3b8;
+  --color-ash: #cbd5e1;
+  --color-electric: #3b82f6;
+  --color-ink: #0f172a;
+}
