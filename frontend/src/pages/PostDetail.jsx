@@ -7,7 +7,7 @@ const PostDetail = () => {
     const [post, setPost] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const useNavigate = useNavigate();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchPost = async () => {
