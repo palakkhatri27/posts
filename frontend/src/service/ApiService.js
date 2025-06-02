@@ -2,6 +2,13 @@ import axios from "axios";
 
 export default class ApiService {
     static API_BASE_URL  = "https://postsbackend-csln.onrender.com";
+    static API_KEY = process.env.REACT_APP_API_KEY;
+
+    static get authHeaders() {
+        return {
+            "x-api-key": this.API_KEY
+        };
+    }
 
     static async getPosts(page = 1) {
         try {
@@ -25,12 +32,38 @@ export default class ApiService {
         try {
             const response = await axios.put(`${this.API_BASE_URL}/post/${postId}`, postData, {
                 headers: {
+                    ...this.authHeaders,
                     "Content-Type": "application/x-www-form-urlencoded",
                 }
-            })
+            });
             return response.data;
         } catch (error) {
             console.error(`Failed to update post with id ${postId}:`, error);
+        }
+    }
+
+    static async createPost(postData) {
+        try {
+            const response = await axios.post(`${this.API_BASE_URL}/create`, postData, {
+                headers: {
+                    ...this.authHeaders,
+                    "Content-Type": "application/json",
+                }
+            });
+            return response.data;
+        } catch (error) {
+            console.error("Failed to create post:", error);
+        }
+    }
+
+    static async deletePost(postId) {
+        try {
+            const response = await axios.delete(`${this.API_BASE_URL}/delete/${postId}`, {
+                headers: this.authHeaders,
+            });
+            return response.data;
+        } catch (error) {
+            console.error(`Failed to delete post with id ${postId}:`, error);
         }
     }
 }

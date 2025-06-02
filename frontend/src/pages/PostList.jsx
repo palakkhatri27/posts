@@ -38,6 +38,15 @@ const PostList = () => {
                 Posts List
                 </h2>
 
+                <div className="flex justify-end mb-6">
+                    <button
+                        onClick={() => navigate("/post/new")}
+                        className="px-4 py-2 bg-electric text-white rounded hover:bg-blue-700 transition"
+                    >
+                        + New Post
+                    </button>
+                </div>
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                 {posts.map((post) => (
                     <div

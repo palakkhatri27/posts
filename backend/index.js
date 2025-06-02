@@ -29,6 +29,14 @@ const pool = new Pool({
 // Use public folder for static files.
 app.use(express.static('public'));
 
+function authenticateApiKey(req, res, next) {
+    const apiKey = req.headers['x-api-key'];
+    if (!apiKey || apiKey !== process.env.API_KEY) {
+        return res.status(401).json({ error: 'Unauthorized: Invalid or missing API key' });
+    }
+    next();
+}
+
 async function getAllPosts(page = 1) {
     const LIMIT = 9;
     const offset = (page - 1) * LIMIT;
@@ -141,7 +149,7 @@ app.get('/post/:id', async (req, res) => {
 });
 
 // Update title or body or both
-app.put('/post/:id', async (req, res) => {
+app.put('/post/:id', authenticateApiKey, async (req, res) => {
     const postId = parseInt(req.params.id);
     const { title, body } = req.body;
     
@@ -180,15 +188,69 @@ app.put('/post/:id', async (req, res) => {
             return res.status(500).json({ error: 'Internal Server Error' });
         }
     }
-})
+});
 
 // Function to persist data from API_URL to our own postgresql database
-app.post('/insert', async (req, res) => {
+app.post('/insertfromapi', authenticateApiKey, async (req, res) => {
     const response = await axios.get(API_URL);
     const result = response.data;
     await insertPosts(result);
     return res.redirect('/');
-})
+});
+
+// Create a new post
+app.post('/create', authenticateApiKey, async (req, res) => {
+    const { userId, title, body } = req.body;
+
+    if (!userId || !title || !body) {
+        return res.status(400).json({ error: 'userId, title, and body are required' });
+    }
+
+    try {
+        // Ensure user exists
+        const userCheck = await pool.query('SELECT id FROM users WHERE id = $1', [userId]);
+
+        if (userCheck.rowCount === 0) {
+            await pool.query('INSERT INTO users (id) VALUES ($1)', [userId]);
+        }
+
+        // Insert new post
+        const insertPostQuery = `
+            INSERT INTO posts (userId, title, body)
+            VALUES ($1, $2, $3)
+            RETURNING id
+        `;
+        const result = await pool.query(insertPostQuery, [userId, title, body]);
+
+        return res.status(201).json({ message: 'Post created successfully', postId: result.rows[0].id });
+    } catch (error) {
+        console.error('Failed to create post:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+// Delete a post by ID
+app.delete('/delete/:id', authenticateApiKey, async (req, res) => {
+    const postId = parseInt(req.params.id);
+
+    if (isNaN(postId)) {
+        return res.status(400).json({ error: 'Invalid post ID' });
+    }
+
+    try {
+        const result = await pool.query('DELETE FROM posts WHERE id = $1', [postId]);
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: 'Post not found' });
+        }
+
+        return res.status(200).json({ message: 'Post deleted successfully' });
+    } catch (error) {
+        console.error('Failed to delete post:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 
 // Listen on your predefined port and start the server.
 app.listen(port, () => {

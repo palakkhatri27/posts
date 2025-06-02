@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import ApiService from "../service/ApiService";
 
 const PostDetail = () => {
@@ -7,6 +7,7 @@ const PostDetail = () => {
     const [post, setPost] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const useNavigate = useNavigate();
 
     useEffect(() => {
         const fetchPost = async () => {
@@ -23,6 +24,17 @@ const PostDetail = () => {
 
         fetchPost();
     }, [id]);
+
+    const handleDelete = async () => {
+        if (!window.confirm("Are you sure you want to delete this post?")) return;
+        try {
+            await ApiService.deletePost(id);
+            alert(`Post ${id} deleted successfully`);
+            navigate("/");
+        } catch (err) {
+            alert("Failed to delete post.");
+        }
+    };
 
     if (loading) {
         return (
@@ -66,8 +78,15 @@ const PostDetail = () => {
                         to={`/edit/${post.id}`}
                         className="inline-block px-4 py-2 bg-electric text-white rounded hover:bg-blue-700 transition"
                     >
-                        ✏️ Edit this Post
+                        Edit this Post
                     </Link>
+
+                    <button
+                        onClick={handleDelete}
+                        className="inline-block px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
+                    >
+                        Delete Post
+                    </button>
 
                     <Link
                         to="/"
