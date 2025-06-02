@@ -4,6 +4,7 @@ const axios = require("axios");
 const { Pool } = require("pg");
 const countChar = require("./build/Release/countChar");
 const dotenv = require("dotenv");
+const cors = require('cors');
 
 const app = express();
 const port = 4000;
@@ -12,6 +13,7 @@ const API_URL = "https://jsonplaceholder.typicode.com/posts";
 dotenv.config();
 
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors());
 
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
