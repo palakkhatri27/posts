@@ -14,11 +14,10 @@ dotenv.config();
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const pool = new Pool({
-    user: process.env.PG_USER,
-    host: process.env.PG_HOST,
-    database: process.env.PG_DATABASE,
-    password: process.env.PG_PASSWORD,
-    port: process.env.PG_PORT,
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+        rejectUnauthorized: false, // Required for Render’s self-signed certs
+    },
     max: process.env.PG_MAX,
     connectionTimeoutMillis: process.env.PG_CONNTIMEOUT,
     idleTimeoutMillis: process.env.PG_IDLETIMEOUT,
