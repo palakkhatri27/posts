@@ -2,7 +2,7 @@ import axios from "axios";
 
 export default class ApiService {
     static API_BASE_URL  = "https://postsbackend-csln.onrender.com";
-    static API_KEY = process.env.REACT_APP_API_KEY;
+    static API_KEY = process.env.API_KEY;
 
     static get authHeaders() {
         return {
