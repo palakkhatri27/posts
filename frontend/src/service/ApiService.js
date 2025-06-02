@@ -47,7 +47,7 @@ export default class ApiService {
             const response = await axios.post(`${this.API_BASE_URL}/create`, postData, {
                 headers: {
                     ...this.authHeaders,
-                    "Content-Type": "application/json",
+                    "Content-Type": "application/x-www-form-urlencoded",
                 }
             });
             return response.data;

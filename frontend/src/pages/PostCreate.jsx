@@ -13,6 +13,7 @@ const PostCreate = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!title || !body || !userId) {
+            alert("All fields are required.");
             setError("All fields are required.");
             return;
         }
