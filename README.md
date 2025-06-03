@@ -1,4 +1,30 @@
 <h1> Posts App with Sentiment Analysis </h1>
+<table border="1">
+  <thead>
+    <tr>
+      <th>Service</th>
+      <th>URL</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Frontend (Vercel)</td>
+      <td><a href="https://posts-eta-ashen.vercel.app/" target="_blank">posts-eta-ashen.vercel.app</a></td>
+    </tr>
+    <tr>
+      <td>Node.js API</td>
+      <td><a href="https://dashboard.render.com/web/srv-d0uo67ripnbc73elej50" target="_blank">NodeJS Backend</a></td>
+    </tr>
+    <tr>
+      <td>FastAPI Sentiment API</td>
+      <td><a href="https://dashboard.render.com/web/srv-d0v8ojfdiees73ck4qe0" target="_blank">FastAPI Backend</a></td>
+    </tr>
+    <tr>
+      <td>PostgreSQL DB</td>
+      <td><a href="https://dashboard.render.com/d/dpg-d0uoirbe5dus739uck90-a" target="_blank">Render DB Dashboard</a></td>
+    </tr>
+  </tbody>
+</table>
 <hr>
 Features <br>
 - Create, read, update, and delete blog posts <br>
