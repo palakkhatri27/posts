@@ -1,0 +1,10 @@
+{
+    "version": 2,
+    "builds": [
+      { "src": "sentiment_fastapi.py", "use": "@vercel/python" }
+    ],
+    "routes": [
+      { "src": "/(.*)", "dest": "sentiment_fastapi.py" }
+    ]
+  }
+  
