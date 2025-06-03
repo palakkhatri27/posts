@@ -4,6 +4,7 @@ Features <br>
 - Create, read, update, and delete blog posts <br>
 - Analyze sentiment of blog content or user input (Positive, Negative, Neutral) <br>
 - Backend API (CRUD): Node.js/Express (Render) <br>
+    Character count in C++ included with NodeJS
 - Sentiment API: FastAPI + nltk (OnRender) <br>
 - Frontend: React (Vite, deployed on Vercel) <br>
 <hr>
