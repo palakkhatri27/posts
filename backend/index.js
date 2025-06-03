@@ -41,7 +41,7 @@ async function getAllPosts(page = 1) {
     const LIMIT = 9;
     const offset = (page - 1) * LIMIT;
     const result = await pool.query(
-        "SELECT * FROM posts ORDER BY id LIMIT $1 OFFSET $2",
+        "SELECT * FROM posts ORDER BY id DESC LIMIT $1 OFFSET $2",
         [LIMIT, offset]
     );
     return result.rows;
