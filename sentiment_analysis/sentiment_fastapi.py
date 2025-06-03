@@ -3,12 +3,8 @@ from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 from pydantic import BaseModel
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
-
-from nltk.data import find
-try:
-    find("sentiment/vader_lexicon.zip")
-except LookupError:
-    raise RuntimeError("VADER lexicon not found.")
+import nltk
+nltk.data.path.append("nltk_data")
 
 # Initialize FastAPI and Sentiment Analyzer
 app = FastAPI()
