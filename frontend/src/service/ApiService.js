@@ -2,6 +2,7 @@ import axios from "axios";
 
 export default class ApiService {
     static API_BASE_URL  = "https://postsbackend-csln.onrender.com";
+    static API_SENTIMENT_URL = "https://postsfastapi.onrender.com";
     static API_KEY = import.meta.env.VITE_API_KEY;
 
     static get authHeaders() {
@@ -64,6 +65,21 @@ export default class ApiService {
             return response.data;
         } catch (error) {
             console.error(`Failed to delete post with id ${postId}:`, error);
+        }
+    }
+
+    static async analyzeSentiment(text) {
+        try {
+            const response = await axios.post(`${this.API_SENTIMENT_URL}/analyze`, { text }, {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+            return response.data; // expected to be { sentiment: "Positive" | "Negative" | "Neutral" }
+        } catch (error) {
+            console.error("Failed to analyze sentiment:", error);
+            throw error;
         }
     }
 }

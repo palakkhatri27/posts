@@ -40,10 +40,16 @@ const PostList = () => {
 
                 <div className="flex justify-end mb-6">
                     <button
+                        onClick={() => navigate("/sentiment")}
+                        className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 transition"
+                    >
+                        Sentiment Analysis
+                    </button>
+                    <button
                         onClick={() => navigate("/post/new")}
                         className="px-4 py-2 bg-electric text-white rounded hover:bg-blue-700 transition"
                     >
-                        + New Post
+                        New Post
                     </button>
                 </div>
 
