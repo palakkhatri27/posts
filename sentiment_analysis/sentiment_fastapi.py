@@ -1,22 +1,24 @@
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
+from fastapi.exceptions import RequestValidationError
 from pydantic import BaseModel
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import nltk
 
-# Download VADER lexicon if not already downloaded
+# Download VADER lexicon
 nltk.download('vader_lexicon')
 
-# Initialize app and sentiment analyzer
+# Initialize FastAPI and Sentiment Analyzer
 app = FastAPI()
 sia = SentimentIntensityAnalyzer()
 
-# Request model
-class SamplePost(BaseModel):
+# Input model for post
+class BlogPost(BaseModel):
     text: str
 
-# Sentiment classification function
-def classify_sentiment(SamplePost: str) -> str:
-    score = sia.polarity_scores(samplepost)['compound']
+# Sentiment classifier function
+def classify_sentiment(post: str) -> str:
+    score = sia.polarity_scores(post)['compound']
     if score >= 0.05:
         return 'Positive'
     elif score <= -0.05:
@@ -24,8 +26,20 @@ def classify_sentiment(SamplePost: str) -> str:
     else:
         return 'Neutral'
 
-# API endpoint
+# Error handler for empty string
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    return JSONResponse(
+        status_code=400,
+        content={"error": "Missing or invalid text in request body."}
+    )
+
+@app.get("/")
+def read_root():
+    return {"message": "Welcome to the Blog Sentiment API!"}
+
+# POST endpoint for sentiment analysis
 @app.post("/analyze")
-def analyze_sentiment(samplepost: SamplePost):
-    sentiment = classify_sentiment(samplepost.text)
+def analyze_sentiment(post: BlogPost):
+    sentiment = classify_sentiment(post.text)
     return {"sentiment": sentiment}

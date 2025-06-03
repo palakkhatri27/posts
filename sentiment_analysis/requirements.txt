@@ -1,4 +1,3 @@
 fastapi
 nltk
 uvicorn
-asgi-vercel
